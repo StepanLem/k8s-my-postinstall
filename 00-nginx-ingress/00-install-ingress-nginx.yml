@@ -1,0 +1,54 @@
+---
+- name: Установка nginx-ingress
+  hosts: kubernetes
+  gather_facts: yes
+  become: no
+  vars:
+    ingress_nginx_version: "4.13.2" # следи за версией и обновляй при желании.
+    ingress_nginx_values_file: "ingress-nginx-controller-values.yaml"
+
+  tasks:
+    - name: Проверка Helm
+      command: "helm version"
+      register: helm_check
+      failed_when: helm_check.rc != 0
+      changed_when: false
+
+    - name: Добавление Helm репозитория ingress-nginx
+      kubernetes.core.helm_repository:
+        name: ingress-nginx
+        repo_url: "https://kubernetes.github.io/ingress-nginx"
+
+    - name: Установка nginx-ingress
+      kubernetes.core.helm:
+        name: ingress-nginx
+        chart_ref: ingress-nginx/ingress-nginx
+        chart_version: "{{ ingress_nginx_version }}"
+        release_namespace: ingress-nginx
+        create_namespace: true
+        values_files:
+          - "{{ ingress_nginx_values_file }}"
+
+      #- name: Ждем, пока все поды nginx-ingress будут Ready
+      #kubernetes.core.k8s_info:
+      # todo
+
+    - name: Получение информации о сервисе ingress-nginx
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Service
+        name: ingress-nginx-controller
+        namespace: ingress-nginx
+      register: ingress_service
+
+    - name: Вывод информации о nginx-ingress
+      debug:
+        msg: |
+          nginx-ingress установлен успешно!
+          Namespace: ingress-nginx
+          Версия: {{ ingress_nginx_version }}
+          IngressClass: nginx
+          Сервис: {{ ingress_service.resources[0].spec.type if ingress_service.resources else 'Не найден' }}
+          {% if ingress_service.resources and ingress_service.resources[0].spec.type == 'LoadBalancer' %}
+          External IP: {{ ingress_service.resources[0].status.loadBalancer.ingress[0].ip if ingress_service.resources[0].status.loadBalancer.ingress else 'Ожидается назначение' }}
+          {% endif %}

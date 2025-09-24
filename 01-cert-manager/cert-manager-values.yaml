@@ -1,0 +1,20 @@
+# cert-manager Helm Values for v1.18.2
+
+# Посмотреть дефолтные значения:
+# https://artifacthub.io/packages/helm/cert-manager/cert-manager
+
+
+crds:
+  # This option decides if the CRDs should be installed
+  # as part of the Helm installation.
+  enabled: true
+
+# В версии 1.18.2 выдаёт ошибку с Exact PathType. При challenge с nginx-ingress, поэтому:
+config:
+  # apiVersion и kind не обязательны, но можно явно указать для читаемости:
+  apiVersion: controller.config.cert-manager.io/v1alpha1
+  kind: ControllerConfiguration
+  featureGates:
+    # Отключаем Exact path для ACME → revert в ImplementationSpecific
+    ACMEHTTP01IngressPathTypeExact: false
+

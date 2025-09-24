@@ -1,0 +1,55 @@
+# Посмотреть дефолтные значения:
+# helm show values ingress-nginx --repo https://kubernetes.github.io/ingress-nginx > nginxingress-fullvalues.yaml
+
+
+# Если k3s:
+# В k3s ПО ДЕФОЛТУ СРАЗУ УСТАНОВЛЕН traefik-ingress-controller. Т.е. Если в k3s, то используй дефолтный вместо этого.
+
+
+# helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace --values ingress-nginx-values.yaml
+
+# NOTE: закомментированное = явно прописанные дефолтные значения.
+
+# Это версия для hostport. (для обычного lb надо будет немного поменять)
+
+controller:
+  # ну можно больше для отказоустойчивости мб. В случае lb.
+  # replicaCount: 1
+
+  # Чтобы явно прописывать к какому из возможных нескольких ingress-cotroller.name привязаны ingress.yaml
+  ingressClassResource:
+    name: nginx
+    enabled: true
+    default: true # сделай false, если какой-то другой уже установлен по дефолту.
+
+  ingressClass: nginx
+  
+  # -- Use a `DaemonSet` or `Deployment`
+  kind: DaemonSet # для hostport рекомендуется DaemonSet. Для внешнего LB или MetalLB - Deployment.
+  # Перенапрвлляет трафик с ноды на сервис по ингресу. Замещает LB в маленьких кластерах.
+  hostPort:
+    # -- Enable 'hostPort' or not
+    enabled: true # for 80 and 443
+    #ports
+      #http: 80
+      #https: 443
+  
+  # По дефолту loadBalancer. В целом похуй, но когда у тебя нет внешнего lb, то зачем наружу торчать
+  # этому сервису.
+  service:
+   type: ClusterIP  # Изменено с LoadBalancer на ClusterIP для hostPort режима. Но неважно по сути. Можно и так и так, просто нафига высовывать наружу то, что не будет использоваться снаружи таким способом.
+
+  # По дефолту выключены. Там несколько параметров внутри. Надо на деле с мониторингом разбираться с ServiceMonitor, prometheusRule и мониторигом в целом.
+  # metrics:
+  #   enabled: false
+
+# В дефолтных значениях нет лимитов. Почитай, там хорошо комментарии хорошие.
+  # resources:
+  #   requests:
+  #     cpu: 100m
+  #     memory: 90Mi
+
+# Дефолтная 404 страница. Обычно у приложений делают свою.
+# А эта просто выдаёт request: "default backend - 404", вместо белой базовой страницы nginx с "404 Not Found. nginx".
+# defaultBackend:
+#   enabled: false

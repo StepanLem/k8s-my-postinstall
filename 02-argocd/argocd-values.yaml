@@ -1,0 +1,35 @@
+# Посмотреть дефолтные значения:
+# helm show values argo-cd --repo https://argoproj.github.io/argo-helm > argocd-fullvalues.yaml
+
+# При текущих значениях: ingress с tls будет создан самим хелм-чартом. Подробнее: 
+# https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd#ssl-termination-at-ingress-controller
+# и https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-2-ssl-termination-at-ingress-controller
+
+
+global:
+  domain: argocd.veryred.ru
+
+configs:
+  params:
+    server.insecure: true
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      # /cluster-issuer(или /issuer, если и тут поменять) должен быть создан заранее для проекта или для кластера соосвественно
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    extraTls:
+      - hosts:
+        - argocd.veryred.ru
+        # Based on the ingress controller used secret might be optional
+        secretName: argocd-server-tls
+    # tls: true не используется, ибо его заменяет extraTls с явным указанием секрета.
+    # для tls=true argocd-server-tls секрет уже должен быть создан, если без анотации letsencrypt-prod.
+    # Ну то есть по сути либо tls=true делается и определённое имя у секрета, либо как выше сделано для любого имени.
+    # НО! Мы хотим чтобы issuer сам создвал сертификаты(так что помимо использования подхода с явным указанием,)
+    # потому мы добавляем аннотацию cert-manager.io/cluster-issuer: "letsencrypt-prod",
+    # чтобы секрет создался сам. Секрет называем argocd-server-tls, чтобы придерживаться стандартов.

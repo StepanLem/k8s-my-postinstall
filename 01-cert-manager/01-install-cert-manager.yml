@@ -1,0 +1,41 @@
+---
+- name: Установка cert-manager
+  hosts: kubernetes
+  gather_facts: yes
+  become: no
+  vars:
+    cert_manager_version: "v1.18.2" # следи за версией и обновляй при желании.
+    cert_manager_values_file: "cert-manager-values.yaml"
+
+  tasks:
+    - name: Проверка Helm
+      command: "helm version"
+      register: helm_check
+      failed_when: helm_check.rc != 0
+      changed_when: false
+
+    - name: Установка cert-manager
+      kubernetes.core.helm:
+        name: cert-manager
+        chart_ref: oci://quay.io/jetstack/charts/cert-manager
+        chart_version: "{{ cert_manager_version }}"
+        release_namespace: cert-manager
+        create_namespace: true
+        values_files:
+          - "{{ cert_manager_values_file }}"
+    
+    # TODO: как делать проверку что всё развернулось.
+
+    - name: Применение ClusterIssuer для Let's Encrypt
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('file', 'letsencrypt-prod-clusterissuer.yaml') | from_yaml }}"
+
+    - name: Вывод информации о cert-manager
+      debug:
+        msg: |
+          cert-manager установлен успешно!
+          Namespace: cert-manager
+          Версия: {{ cert_manager_version }}
+          CRDs установлены автоматически
+          ClusterIssuer: letsencrypt-prod

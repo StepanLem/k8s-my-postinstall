@@ -1,0 +1,68 @@
+---
+- name: Установка ArgoCD
+  hosts: kubernetes
+  gather_facts: yes
+  become: no
+  vars:
+    argocd_version: "8.5.6"
+    argocd_namespace: "argocd"
+    argocd_values_file: "argocd-values.yaml"
+
+  tasks:
+    - name: Проверка Helm
+      command: "helm version"
+      register: helm_check
+      failed_when: helm_check.rc != 0
+      changed_when: false
+
+    - name: Добавление Helm репозитория argo
+      kubernetes.core.helm_repository:
+        name: argo
+        repo_url: "https://argoproj.github.io/argo-helm"
+
+    - name: Установка ArgoCD
+      kubernetes.core.helm:
+        name: argocd
+        chart_ref: argo/argo-cd
+        release_namespace: "{{ argocd_namespace }}"
+        chart_version: "{{ argocd_version }}"
+        create_namespace: true
+        values_files:
+          - "{{ argocd_values_file }}"
+
+    #TODO:
+    #- name: Ожидание готовности ArgoCD
+
+    # 
+    - name: (forInfo) Определение домена ArgoCD из values
+      set_fact:
+        argocd_values_content: "{{ lookup('file', argocd_values_file) | from_yaml }}"
+        argocd_domain: "{{ (lookup('file', argocd_values_file) | from_yaml).global.domain | default('argocd.example.com') }}"
+
+    - name: Получение пароля ArgoCD
+      kubernetes.core.k8s:
+        name: argocd-initial-admin-secret
+        namespace: "{{ argocd_namespace }}"
+        api_version: v1
+        kind: Secret
+        state: present
+      register: argocd_secret
+
+    - name: Вывод информации о доступе к ArgoCD
+      debug:
+        msg: |
+          ArgoCD установлен успешно!
+          Namespace: {{ argocd_namespace }}
+          Версия: {{ argocd_version }}
+          Доступ через Ingress:
+          - HTTPS: https://{{ argocd_domain }}
+          - Пользователь: admin
+          - Пароль: {{
+            (argocd_secret.result.data.password | b64decode)
+            if (argocd_secret.result.data is defined and 'password' in argocd_secret.result.data)
+            else 'Секрет еще не создан'
+          }}
+      # В командах это:
+      # kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode
+
+      

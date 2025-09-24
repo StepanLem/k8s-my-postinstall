@@ -1,0 +1,33 @@
+---
+- name: Полная настройка Kubernetes кластера
+  hosts: kubernetes
+  gather_facts: yes
+  become: no
+
+  tasks:
+    - name: Установка nginx-ingress
+      include: 00-nginx-ingress/00-install-ingress-nginx.yml
+
+    - name: Установка cert-manager
+      include: 01-cert-manager/01-install-cert-manager.yml
+
+    - name: Установка ArgoCD
+      include: 02-argocd/02-install-argocd.yml
+
+    - name: Итоговая информация
+      debug:
+        msg: |
+          🎉 Все компоненты установлены успешно!
+          
+          📋 Установленные компоненты:
+          - nginx-ingress (входящий трафик)
+          - cert-manager (управление TLS сертификатами)
+          - ArgoCD (GitOps)
+          
+          🔗 Доступ к ArgoCD:
+          - HTTPS: смотрите вывод задачи "Вывод информации о доступе к ArgoCD" выше
+            (домен берётся из 02-argocd/argocd-values.yaml -> global.domain)
+          
+          🌐 Ingress Controller:
+          - IngressClass: nginx
+          - Namespace: ingress-nginx
