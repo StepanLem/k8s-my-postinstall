@@ -1,5 +1,5 @@
-# Values override for dev environment
-replicaCount: 1
+# Default values for test-app
+replicaCount: 2
 
 image:
   repository: nginx
@@ -7,7 +7,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
 
 ingress:
@@ -16,5 +16,3 @@ ingress:
   host: test-app.veryred.ru
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-
-

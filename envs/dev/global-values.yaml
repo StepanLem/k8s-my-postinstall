@@ -1,12 +1,12 @@
-global:
+# global:
 
-  redis:
-    service:
-      host:
-      port:
-    secret: redis-secret
+#   redis:
+#     service:
+#       host:
+#       port:
+#     secret: redis-secret
 
-  auth:
-    service:
-      host:
-      port:
+#   auth:
+#     service:
+#       host:
+#       port:
