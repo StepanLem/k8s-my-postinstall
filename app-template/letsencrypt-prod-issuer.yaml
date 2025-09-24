@@ -1,0 +1,24 @@
+# Это разворачивается в argocd для каждого (а для аргосд заранее видимо вручную)
+# ТО ЕСТЬ: этот вариант (не ClusterIssuer) разворачивается вместе с application.
+
+apiVersion: cert-manager.io/v1
+kind: Issuer # Там ещё есть CLusterIssuer надо понять в чём разница и записать. ClusterIssuer один для всего кластера tls, а в Issuer для каждого проекта свой tls получается делать, что улучшает безопасность.
+metadata:
+  name: letsencrypt-prod
+  namespace: transcriber-microservices # Тут соответсвенно namespace проекта для которого tls делается.
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: stepanlemtugin@gmail.com
+    # The ACME certificate profile
+    profile: tlsserver # ввели в v1.18. Гугли.
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod-key-pair # как я понимаю это имя с которым создадутся сертификаты. Так что ничего вручную заранее создавать не надо.
+    # Enable the HTTP-01 challenge provider
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: nginx
