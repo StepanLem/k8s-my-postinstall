@@ -19,7 +19,7 @@ server:
     ingressClassName: nginx
     annotations:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP" # противоположность ssl-passthrough: "true"
       # /cluster-issuer(или /issuer, если и тут поменять) должен быть создан заранее для проекта или для кластера соосвественно
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
     extraTls:
