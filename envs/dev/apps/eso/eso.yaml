@@ -12,6 +12,7 @@ spec:
       chart: external-secrets
       targetRevision: 0.20.1
       helm:
+        skipCrds: false
         valueFiles:
           - $values/envs/dev/apps/eso/values.yaml
     - repoURL: https://github.com/StepanLem/k8s-my-postinstall.git
