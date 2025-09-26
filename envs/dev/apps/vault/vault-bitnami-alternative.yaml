@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: vault-dev
+  name: vault-dev-bitnami
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   sources:
-    - repoURL: oci://registry-1.docker.io/hashicorp
+    - repoURL: https://charts.bitnami.com/bitnami
       targetRevision: 0.30.1
       chart: vault
       helm:
@@ -26,5 +26,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-
-
