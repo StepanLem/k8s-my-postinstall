@@ -11,6 +11,9 @@
     - name: Установка cert-manager
       include: 01-cert-manager/01-install-cert-manager.yml
 
+    - name: Установка local path provisioner
+      include: 03-local-path-provisioner/03-install-local-path-provisioner-manifests.yml
+
     - name: Установка ArgoCD
       include: 02-argocd/02-install-argocd.yml
 
@@ -22,6 +25,7 @@
           📋 Установленные компоненты:
           - nginx-ingress (входящий трафик)
           - cert-manager (управление TLS сертификатами)
+          - local-path-provisioner (локальное хранилище)
           - ArgoCD (GitOps)
           
           🔗 Доступ к ArgoCD:
