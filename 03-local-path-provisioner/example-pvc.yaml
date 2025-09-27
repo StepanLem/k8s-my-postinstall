@@ -28,4 +28,3 @@ spec:
   - name: local-path-volume
     persistentVolumeClaim:
       claimName: local-path-pvc
-
