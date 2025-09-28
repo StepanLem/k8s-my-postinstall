@@ -1,10 +1,10 @@
 # External Secrets Operator Helm Values for v0.20.1
 
 # Посмотреть дефолтные значения:
-# helm show values external-secrets --version 0.20.1 --repo https://charts.external-secrets.io
+# helm show values external-secrets --version 0.20.1 --repo https://charts.external-secrets.io > eso-fullvalues.yaml
 
 # Установка CRDs (в инфраструктуре это правильно)
-installCRDs: true
+installCRDs: true #сделать true. Тут прост на второй раз поэтому уже скачены
 
 # В идеальном мире можно свой issuer подвязывать, а это отключать
 # certController:

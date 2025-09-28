@@ -1,0 +1,85 @@
+---
+- name: Установка Kubernetes Dashboard
+  hosts: kubernetes
+  gather_facts: yes
+  become: no
+  vars:
+    dashboard_version: "7.13.0"
+    dashboard_values_file: "dashboard-values.yaml"
+
+  tasks:
+    - name: Проверка Helm
+      command: "helm version"
+      register: helm_check
+      failed_when: helm_check.rc != 0
+      changed_when: false
+
+    - name: Добавление Helm репозитория Kubernetes Dashboard
+      kubernetes.core.helm_repository:
+        name: kubernetes-dashboard
+        repo_url: https://kubernetes.github.io/dashboard
+
+    - name: Установка Kubernetes Dashboard
+      kubernetes.core.helm:
+        name: kubernetes-dashboard
+        chart_ref: kubernetes-dashboard/kubernetes-dashboard
+        chart_version: "{{ dashboard_version }}"
+        release_namespace: kubernetes-dashboard
+        create_namespace: true
+        values_files:
+          - "{{ dashboard_values_file }}"
+
+    - name: Ожидание готовности Kubernetes Dashboard
+      kubernetes.core.k8s_info:
+        api_version: apps/v1
+        kind: Deployment
+        name: kubernetes-dashboard
+        namespace: kubernetes-dashboard
+        wait: true
+        wait_condition:
+          type: Available
+          status: "True"
+        wait_timeout: 300
+
+    - name: Создание ServiceAccount для dashboard
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('file', 'dashboard-admin-user.yaml') | from_yaml }}"
+
+    - name: Создание ClusterRoleBinding для dashboard
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('file', 'dashboard-admin-clusterrolebinding.yaml') | from_yaml }}"
+
+    - name: Создание token для dashboard
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('file', 'dashboard-admin-token.yaml') | from_yaml }}"
+
+    - name: Получение токена для доступа к dashboard
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Secret
+        name: dashboard-admin-token
+        namespace: kubernetes-dashboard
+      register: dashboard_token
+
+    - name: Вывод информации о Kubernetes Dashboard
+      debug:
+        msg: |
+          Kubernetes Dashboard установлен успешно!
+          Namespace: kubernetes-dashboard
+          Версия: {{ dashboard_version }}
+          
+          🔗 Доступ к Dashboard:
+          - Port-forward: kubectl port-forward -n kubernetes-dashboard service/kubernetes-dashboard 8443:443
+          - URL: https://localhost:8443
+          
+          🔑 Токен для входа:
+          {{ dashboard_token.resources[0].data.token | b64decode if dashboard_token.resources else 'Токен будет создан после применения RBAC' }}
+          
+          📋 Альтернативные способы доступа:
+          - kubectl proxy --port=8001
+          - URL: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+# Вывести bearer токен: 
+# kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath="{.data.token}" | base64 -d

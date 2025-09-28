@@ -20,6 +20,9 @@
     - name: Установка External Secrets Operator
       include: 04-external-secrets-operator/04-install-external-secrets-operator.yml
 
+    - name: Установка Kubernetes Dashboard
+      include: 05-kubernetes-dashboard/05-install-kubernetes-dashboard.yml
+
     - name: Итоговая информация
       debug:
         msg: |
@@ -31,6 +34,7 @@
           - local-path-provisioner (локальное хранилище)
           - ArgoCD (GitOps)
           - External Secrets Operator (управление секретами)
+          - Kubernetes Dashboard (веб-интерфейс)
           
           🔗 Доступ к ArgoCD:
           - HTTPS: смотрите вывод задачи "Вывод информации о доступе к ArgoCD" выше

@@ -1,0 +1,78 @@
+# Kubernetes Dashboard Helm Values for v7.13.0
+
+# Посмотреть дефолтные значения:
+# helm show values kubernetes-dashboard --version 7.13.0 --repo https://kubernetes.github.io/dashboard > dashboard-fullvalues.yaml 
+
+# Основные настройки
+# replicaCount: 1
+
+# Образ и тег
+# image:
+#   repository: kubernetesui/dashboard
+#   tag: v2.7.0
+#   pullPolicy: IfNotPresent
+
+# Настройки сервиса
+# service:
+#   type: ClusterIP
+#   externalPort: 443
+#   internalPort: 8443
+
+# Настройки безопасности
+# extraArgs:
+#   - --enable-skip-login
+#   - --disable-settings-authorizer
+#   - --enable-insecure-login
+#   - --insecure-bind-address=0.0.0.0
+
+# Настройки ресурсов
+# resources:
+#   limits:
+#     cpu: 200m
+#     memory: 256Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
+
+# Настройки безопасности контейнера
+# securityContext:
+#   runAsNonRoot: true
+#   runAsUser: 1001
+#   allowPrivilegeEscalation: false
+#   capabilities:
+#     drop:
+#       - ALL
+#   readOnlyRootFilesystem: true
+
+# Настройки для production (закомментированы для dev)
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: dashboard.veryred.ru
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: dashboard-tls
+      hosts:
+        - dashboard.veryred.ru
+
+# # Настройки мониторинга
+# metrics:
+#   enabled: true
+#   service:
+#     type: ClusterIP
+#     externalPort: 9090
+#     internalPort: 9090
+
+# # Настройки для разработки
+# settings:
+#   clusterName: "Kubernetes Cluster"
+#   itemsPerPage: 10
+#   logsAutoRefreshTimeInterval: 5
+#   resourceAutoRefreshTimeInterval: 5
+#   disableAccessDeniedNotifications: false
