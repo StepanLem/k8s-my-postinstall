@@ -1,0 +1,16 @@
+    # Это секрет для подключения Argocd к приватным репо helm-чартов(Helm/OCI)
+    # к приватным репо git похожий способ, просто url другой. прогугли на всякий.
+    
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: my-oci-repo-creds-for-private-charts
+      namespace: argocd
+      labels:
+        argocd.argoproj.io/secret-type: repository
+    stringData:
+      url: registry-1.docker.io/bitnamicharts # Replace with your OCI registry URL oci://registry-1.docker.io/bitnamicharts
+      enableOCI: "true"
+      # Add username and password if it's a private registry
+      username: stepanlem
+      password: some-token-from-dockerhub
