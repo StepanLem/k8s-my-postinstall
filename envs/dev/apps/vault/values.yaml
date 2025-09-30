@@ -31,7 +31,7 @@ server:
   # надо слать http проверки, вместо https. Не забудь tlsDisable: true, иначе не сработает.
   readinessProbe:
     # enabled: true
-    path: /v1/sys/health?standbyok=true
+    path: /v1/sys/health?standbyok=true # это путь для HTTP проверки, см fullvalues.yaml
     # port: 8200
     # failureThreshold: 2
     # initialDelaySeconds: 5
@@ -131,5 +131,5 @@ server:
 ui:
   enabled: true
 
-# injector:
-#   enabled: false
+injector:
+  enabled: false
