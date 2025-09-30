@@ -1,36 +1,56 @@
 ---
-- name: Установка local path provisioner (через манифесты)
+- name: Установка local path provisioner (через Helm)
   hosts: kubernetes
   gather_facts: yes
   become: no
   vars:
     local_path_provisioner_version: "v0.0.32"
-    local_path_provisioner_manifest_url: "https://raw.githubusercontent.com/rancher/local-path-provisioner/{{ local_path_provisioner_version }}/deploy/local-path-storage.yaml"
+    local_path_provisioner_repo: "https://github.com/rancher/local-path-provisioner.git"
+    local_path_provisioner_chart_path: "./deploy/chart/local-path-provisioner"
+    local_path_provisioner_values_file: "{{ playbook_dir }}/local-path-provisioner-values.yaml"
 
   tasks:
-    - name: Скачивание манифеста local-path-provisioner
-      uri:
-        url: "{{ local_path_provisioner_manifest_url }}"
-        method: GET
-        return_content: yes
-      register: manifest_content
+    - name: Клонирование репозитория local-path-provisioner
+      git:
+        repo: "{{ local_path_provisioner_repo }}"
+        dest: "/tmp/local-path-provisioner"
+        version: "{{ local_path_provisioner_version }}"
+        force: yes
 
-    - name: Применение манифеста local-path-provisioner
+    - name: Создание namespace local-path-storage
       kubernetes.core.k8s:
+        name: local-path-storage
+        api_version: v1
+        kind: Namespace
         state: present
-        definition: "{{ manifest_content.content | from_yaml_all | list }}"
 
-    - name: Ожидание готовности local-path-provisioner
+
+    - name: Установка local-path-provisioner через Helm
+      kubernetes.core.helm:
+        name: local-path-storage
+        chart_ref: "/tmp/local-path-provisioner/{{ local_path_provisioner_chart_path }}"
+        release_namespace: local-path-storage
+        values_files:
+          - "{{ local_path_provisioner_values_file }}"
+        state: present
+        wait: true
+        wait_timeout: "5m"
+
+    - name: Проверка статуса local-path-provisioner
       kubernetes.core.k8s_info:
         api_version: apps/v1
         kind: Deployment
         name: local-path-provisioner
         namespace: local-path-storage
-        wait: true
-        wait_condition:
-          type: Available
-          status: "True"
-        wait_timeout: 300
+      register: deployment_info
+
+    - name: Вывод статуса Deployment
+      debug:
+        msg: |
+          Deployment статус:
+          Готовые поды: {{ deployment_info.resources[0].status.readyReplicas if deployment_info.resources else 'N/A' }}
+          Всего подов: {{ deployment_info.resources[0].status.replicas if deployment_info.resources else 'N/A' }}
+          Обновления: {{ deployment_info.resources[0].status.updatedReplicas if deployment_info.resources else 'N/A' }}
 
     - name: Получение информации о StorageClass
       kubernetes.core.k8s_info:
@@ -50,4 +70,9 @@
           Reclaim Policy: {{ storageclass_info.resources[0].reclaimPolicy if storageclass_info.resources else 'Delete' }}
           Volume Binding: {{ storageclass_info.resources[0].volumeBindingMode if storageclass_info.resources else 'WaitForFirstConsumer' }}
 
-        #мб добавить удаление созданного по дефолту storageCLass. Или мб можно как-то -set передать в apply там?
+    - name: Очистка временных файлов
+      file:
+        path: "/tmp/local-path-provisioner"
+        state: absent
+
+    # TODO добавить создание storage классов

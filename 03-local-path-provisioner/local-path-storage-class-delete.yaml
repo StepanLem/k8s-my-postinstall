@@ -8,4 +8,4 @@ provisioner: rancher.io/local-path
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Delete
 parameters:
-  nodePath: "/opt/local-path-provisioner/delete"
+  nodePath: "/opt/local-path-provisioner/delete" # подпуть для удобства
