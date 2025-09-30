@@ -27,6 +27,18 @@ server:
   standalone:
     enabled: true
 
+  # так как мы отключили tls:
+  # надо слать http проверки, вместо https
+  readinessProbe:
+    # enabled: true
+    path: /v1/sys/health?standbyok=true
+    # port: 8200
+    # failureThreshold: 2
+    # initialDelaySeconds: 5
+    # periodSeconds: 5
+    # successThreshold: 1
+    # timeoutSeconds: 3
+
   # Привязка к конкретной ноде (node3)
   nodeSelector:
     kubernetes.io/hostname: node3
@@ -50,7 +62,7 @@ server:
     #     path = "/vault/data"
     #   }
 
-# Тут всё дефолтные значения, кроме storageClass
+  # Тут всё дефолтные значения, кроме storageClass
   dataStorage:
     enabled: true
     # Size of the PVC created
@@ -59,7 +71,7 @@ server:
     mountPath: "/vault/data"
     # Name of the storage class to use.  If null it will use the
     # configured default Storage Class.
-    storageClass: local-path
+    storageClass: local-path-delete
     # Access Mode of the storage device being used for the PVC
     accessMode: ReadWriteOnce
     # Annotations to apply to the PVC
