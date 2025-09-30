@@ -13,7 +13,7 @@ spec:
       path: .
       helm:
         valueFiles:
-          - $values/envs/dev/apps/vault/values.yaml
+          - $values/envs/dev/apps/vault/values-of-vault.yaml
     - repoURL: https://github.com/StepanLem/k8s-my-postinstall.git
       targetRevision: main
       ref: values

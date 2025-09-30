@@ -13,7 +13,7 @@ spec:
       targetRevision: 16.7.26 # chart-version с артифакт-хаба
       helm:
         valueFiles:
-          - $values/envs/dev/apps/postgres/values.yaml
+          - $values/envs/dev/apps/postgres/values-of-postgres.yaml
     - repoURL: https://github.com/StepanLem/k8s-my-postinstall.git
       targetRevision: main
       ref: values
