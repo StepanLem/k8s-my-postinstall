@@ -19,6 +19,8 @@ global:
 
 architecture: standalone # или replication
 
+# Используем legacy репозиторий Bitnami для решения проблемы с ImagePullBackOff 
+# как минимум для чарта версии 16.7.26 это проблема
 image:
   registry: docker.io
   repository: bitnamilegacy/postgresql
@@ -26,11 +28,10 @@ image:
   pullPolicy: IfNotPresent
 
 # Primary PostgreSQL configuration
-primary:
-  # Используем новый репозиторий Bitnami для решения проблемы с ImagePullBackOff
-  
+primary:  
   persistence:
     enabled: true
+    # existingClaim: "" # заполнить это и остальное будет игнорироваться.
     size: 8Gi
     storageClass: local-path-delete
     accessModes:

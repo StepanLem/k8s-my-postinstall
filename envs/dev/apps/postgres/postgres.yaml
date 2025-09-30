@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: registry-1.docker.io/bitnamicharts  # без oci и имени
       chart: postgresql
-      targetRevision: 16.7.26 # chart-version с артифакт-хаба
+      targetRevision: 16.7.26 # chart-version
       helm:
         valueFiles:
           - $values/envs/dev/apps/postgres/values-of-postgres.yaml
