@@ -12,7 +12,7 @@ spec:
     name: in-cluster # значит https://kubernetes.default.svc
   source:
     repoURL: https://github.com/StepanLem/k8s-my-postinstall.git
-    targetRevision: vault
+    targetRevision: vault # branch name
     path: envs/dev/apps
     directory:
       recurse: true
