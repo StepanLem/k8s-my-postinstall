@@ -17,9 +17,9 @@
         version: "{{ local_path_provisioner_version }}"
         force: yes
 
-    - name: Создание namespace local-path-storage
+    - name: Создание namespace local-path-provisioner
       kubernetes.core.k8s:
-        name: local-path-storage
+        name: local-path-provisioner
         api_version: v1
         kind: Namespace
         state: present
@@ -29,7 +29,7 @@
       kubernetes.core.helm:
         name: local-path-storage
         chart_ref: "/tmp/local-path-provisioner/{{ local_path_provisioner_chart_path }}"
-        release_namespace: local-path-storage
+        release_namespace: local-path-provisioner
         values_files:
           - "{{ local_path_provisioner_values_file }}"
         state: present
@@ -41,7 +41,7 @@
         api_version: apps/v1
         kind: Deployment
         name: local-path-provisioner
-        namespace: local-path-storage
+        namespace: local-path-provisioner
       register: deployment_info
 
     - name: Вывод статуса Deployment
@@ -63,12 +63,17 @@
       debug:
         msg: |
           local-path-provisioner установлен успешно!
-          Namespace: local-path-storage
+          Namespace: local-path-provisioner
           Версия: {{ local_path_provisioner_version }}
           StorageClass: local-path (по умолчанию)
           Путь для хранения: /opt/local-path-provisioner
           Reclaim Policy: {{ storageclass_info.resources[0].reclaimPolicy if storageclass_info.resources else 'Delete' }}
           Volume Binding: {{ storageclass_info.resources[0].volumeBindingMode if storageclass_info.resources else 'WaitForFirstConsumer' }}
+
+    - name: Применение StorageClass local-path-delete
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ playbook_dir }}/local-path-storage-class-delete.yaml"
 
     - name: Очистка временных файлов
       file:

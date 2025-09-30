@@ -26,6 +26,10 @@ server:
 
   standalone:
     enabled: true
+
+  # Привязка к конкретной ноде (node3)
+  nodeSelector:
+    kubernetes.io/hostname: node3
     # config: |-
     #   ui = true
 
