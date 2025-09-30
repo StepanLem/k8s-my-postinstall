@@ -24,7 +24,7 @@ primary:
   # Обновленная версия образа для решения проблемы с ImagePullBackOff
   image:
     registry: docker.io
-    repository: bitnami/postgresql
+    repository: bitnamilegacy/postgresql
     tag: 17.7.0-debian-12-r0
     pullPolicy: IfNotPresent
   
