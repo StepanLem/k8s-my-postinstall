@@ -70,10 +70,69 @@
           Reclaim Policy: {{ storageclass_info.resources[0].reclaimPolicy if storageclass_info.resources else 'Delete' }}
           Volume Binding: {{ storageclass_info.resources[0].volumeBindingMode if storageclass_info.resources else 'WaitForFirstConsumer' }}
 
+    - name: Применение дефолтного StorageClass local-path
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ playbook_dir }}/local-path-storage-class-default.yaml"
+
     - name: Применение StorageClass local-path-delete
       kubernetes.core.k8s:
         state: present
         src: "{{ playbook_dir }}/local-path-storage-class-delete.yaml"
+
+    - name: Диагностика подов local-path-provisioner
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: local-path-provisioner
+        label_selectors:
+          - "app.kubernetes.io/name=local-path-provisioner"
+      register: provisioner_pods
+
+    - name: Вывод статуса подов
+      debug:
+        msg: |
+          Статус подов local-path-provisioner:
+          {% for pod in provisioner_pods.resources %}
+          Под: {{ pod.metadata.name }}
+          Статус: {{ pod.status.phase }}
+          Нода: {{ pod.spec.nodeName }}
+          {% if pod.status.conditions %}
+          Условия:
+          {% for condition in pod.status.conditions %}
+          - {{ condition.type }}: {{ condition.status }} ({{ condition.reason }})
+          {% endfor %}
+          {% endif %}
+          {% endfor %}
+
+    - name: Проверка событий кластера
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Event
+        namespace: local-path-provisioner
+      register: cluster_events
+
+    - name: Вывод событий кластера
+      debug:
+        msg: |
+          События кластера:
+          {% for event in cluster_events.resources[-5:] %}
+          {{ event.firstTimestamp }} - {{ event.type }}: {{ event.reason }} - {{ event.message }}
+          {% endfor %}
+
+    - name: Проверка всех StorageClass
+      kubernetes.core.k8s_info:
+        api_version: storage.k8s.io/v1
+        kind: StorageClass
+      register: all_storageclasses
+
+    - name: Вывод всех StorageClass
+      debug:
+        msg: |
+          Доступные StorageClass:
+          {% for sc in all_storageclasses.resources %}
+          - {{ sc.metadata.name }} (provisioner: {{ sc.provisioner }}, default: {{ sc.metadata.annotations.get('storageclass.kubernetes.io/is-default-class', 'false') }})
+          {% endfor %}
 
     - name: Очистка временных файлов
       file:
