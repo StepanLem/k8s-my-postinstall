@@ -30,6 +30,7 @@ server:
   # так как мы отключили tls:
   # надо слать http проверки, вместо https
   readinessProbe:
+    scheme: HTTP
     enabled: true
     path: /v1/sys/health?standbyok=true
     port: 8200
