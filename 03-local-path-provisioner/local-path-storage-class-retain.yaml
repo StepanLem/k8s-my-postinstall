@@ -8,4 +8,4 @@ provisioner: rancher.io/local-path
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Retain
 parameters:
-  nodePath: "/opt/local-path-provisioner/retain"
+  nodePath: "/opt/local-path-provisioner"

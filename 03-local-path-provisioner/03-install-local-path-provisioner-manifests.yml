@@ -70,11 +70,6 @@
           Reclaim Policy: {{ storageclass_info.resources[0].reclaimPolicy if storageclass_info.resources else 'Delete' }}
           Volume Binding: {{ storageclass_info.resources[0].volumeBindingMode if storageclass_info.resources else 'WaitForFirstConsumer' }}
 
-    - name: Применение дефолтного StorageClass local-path
-      kubernetes.core.k8s:
-        state: present
-        src: "{{ playbook_dir }}/local-path-storage-class-default.yaml"
-
     - name: Применение StorageClass local-path-delete
       kubernetes.core.k8s:
         state: present

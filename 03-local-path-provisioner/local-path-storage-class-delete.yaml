@@ -3,9 +3,9 @@ kind: StorageClass
 metadata:
   name: local-path-delete
   annotations:
-    storageclass.kubernetes.io/is-default-class: "false
+    storageclass.kubernetes.io/is-default-class: "true"
 provisioner: rancher.io/local-path
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Delete
 parameters:
-  nodePath: "/opt/local-path-provisioner/delete" # подпуть для удобства
+  nodePath: "/opt/local-path-provisioner" # именно этот путь 1в1 должен быть указан в конфиге local-провиженера
