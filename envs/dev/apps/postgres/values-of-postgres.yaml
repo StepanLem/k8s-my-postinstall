@@ -31,11 +31,13 @@ image:
 primary:  
   persistence:
     enabled: true
-    # existingClaim: "" # заполнить это и остальное будет игнорироваться.
+    # existingClaim: "" # заполнить это и остальное про выдачу pvc будет игнорироваться.
     size: 8Gi
     storageClass: local-path-delete
     accessModes:
       - ReadWriteOnce
+    # mountPath: /bitnami/postgresql # куда монитруется volume внутри контейнера.
+
   
   resources:
     requests:
@@ -65,7 +67,7 @@ metrics:
 #   enabled: true
 #   fsGroup: 1001
 
-# Backup configuration (optional)
+# Backup configuration в сторонний volume. Позже реализую. Смотри values.
 backup:
   enabled: false
 
