@@ -1,0 +1,90 @@
+# RabbitMQ configuration for development environment
+
+# версию и values смотри на артифактхаб:
+# https://artifacthub.io/packages/helm/bitnami/rabbitmq
+
+# Global configuration
+global:
+  storageClass: local-path-delete # на что виляет здесь указание?
+
+# Используем legacy репозиторий Bitnami для решения проблемы с ImagePullBackOff
+image:
+  registry: docker.io
+  repository: bitnamilegacy/rabbitmq
+  tag: 4.1.3-debian-12-r1
+  pullPolicy: IfNotPresent
+
+# Authentication configuration
+auth:
+  username: "a" # не шифруется
+  password: "a" # пароль для admin
+  # Тут ещё seccurePassword - бесполезно(автоматическая генерация пароля) 
+  # и updatePassword - тоже мешающая штука(обновляет пароль при апгрейде/релизе).
+  # enableLoopbackUser: false - небезопасно. отключаем (по дефолту созданного юзера guest/guest, 
+      # который может логиниться с localhost.) 
+  # existingPasswordSecret: "" # тут ты передаёшь имя секрета
+  # existingSecretPasswordKey: "" # а тут ключ в этом секрете
+
+  # secretcookie для всех узлов в кластере rMQ должны быть одинаковы, иначе связи не получится. 
+  # erlangCookie: "secretcookie" # для кластеризации. 
+  # existingErlangSecret: "" # достаём из секрета, а не из vaules.  
+  # existingErlangSecretKey: ""
+
+  # Тут же tls если на рэббите экрипшен делать.
+
+# Clustering configuration
+clustering:
+  enabled: false # для dev среды используем standalone
+  replicaCount: 1
+
+# Persistence configuration
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClass: local-path-delete
+  accessModes:
+    - ReadWriteOnce
+  # mountPath: /opt/bitnami/rabbitmq/.rabbitmq/mnesia # куда монтируется volume внутри контейнера
+
+# Resources configuration. В примере совершенно другие значения, но надо на практике смотреть.
+# Такие в dev норм. В прод обычно RabbitMQ жрёт больше памяти (2–4Gi).
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "1Gi"
+    cpu: "500m"
+
+# Node selector
+# nodeSelector:
+#   kubernetes.io/hostname: node3
+
+# Configuration file
+# configuration: |-
+#   ## Он тут берёт значения из values в дефолте. Не парься
+
+# Я не знаю что такое ldap, но у этого тоже есть конфигурация.
+
+# Ingress configuration (если нужен внешний доступ к management UI)
+ingress:
+  enabled: true
+  hostname: rabbitmq.veryred.ru
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  ingressClassName: nginx
+  extraTls:
+    - hosts:
+        - rabbitmq.veryred.ru
+      secretName: rabbitmq-tls
+
+# Metrics configuration. Тут разбираться. Смотри values.yaml
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+
+
+# Network policies
+networkPolicy:
+  enabled: false # хз что это и хз зачем отключаем
