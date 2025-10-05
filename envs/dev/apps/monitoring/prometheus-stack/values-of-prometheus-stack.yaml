@@ -106,6 +106,8 @@ prometheus:
     #         requests:
     #           storage: 20Gi
     
+    # Fix for nil pointer error - remoteWriteDashboards field
+    remoteWriteDashboards: false
 
     # Дефолт
     # ## How long to retain metrics
