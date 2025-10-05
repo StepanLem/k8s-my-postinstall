@@ -1,0 +1,203 @@
+# Prometheus Stack configuration for development environment
+# Based on kube-prometheus-stack chart
+# Chart version: 61.0.0
+# Documentation: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
+
+# Тут много компонентов внутри.
+# Что нужно настроить: 
+# - Ingress для графаны, секрет для графаны.
+# - Отключить windows ... и в rules тоже видимо.
+# - Что за rbac и кому они тут нужны. На кого выделять какие, как настраивать.
+# - Network policy аналогично.
+
+crds:
+  enabled: true
+
+# Отключаем всё что для винды:
+# prometheus-windows-exporter:
+#   ## Enable ServiceMonitor and set Kubernetes label to use as a job label
+#   ##
+#   prometheus:
+#     monitor:
+#       enabled: false
+
+
+# Алёрт менеджеру нужен ingress?
+# Alertmanager configuration
+# Что такое egress?
+# Что именнно делает алертменеджер, какие настройки ему нужны? auth, smtp и тд.
+alertmanager:
+  enabled: true
+  
+  # По дефолту это отключено. Почему? Алертменеджеру нужен всё-таки persistent или нет?
+  # Storage configuration
+  alertmanagerSpec:
+    # storage:
+    #   volumeClaimTemplate:
+    #     spec:
+    #       storageClassName: local-path-delete
+    #       accessModes: ["ReadWriteOnce"]
+    #       resources:
+    #         requests:
+    #           storage: 2Gi
+
+    # О каких данных речь? Сколько обычно хранят по времени?
+    ## Time duration Alertmanager shall retain data for. Default is '120h', and must match the regular expression
+    ## [0-9]+(ms|s|m|h) (milliseconds seconds minutes hours).
+    ##
+    # retention: 120h
+
+# Графану как-то надо подключать к своему приложению? Через GrafanaDatasource
+# Grafana configuration
+grafana:
+  enabled: true
+  
+  # дефолтные значения. Почему не создают через удобный секрет? Ватафак?
+  # Admin credentials
+  # adminUser: admin
+  # adminPassword: "prom-operator" # видимо надо менять вручную после деплоя.
+  
+  # Почему по дефолту это закомментированно? Графане не выжны данные? Важны.
+  # Persistence configuration
+  # persistence:
+  #   enabled: true
+  #   storageClassName: local-path-delete
+  #   size: 5Gi
+  #   accessModes:
+  #     - ReadWriteOnce
+  
+  # Ingress configuration
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - grafana.veryred.ru
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.veryred.ru
+  
+  # дефолтные значения для дефолтной дашборды
+  # Dashboard configuration
+  # defaultDashboardsEnabled: true
+  # defaultDashboardsTimezone: UTC
+  
+  # разбирайся https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources
+  # Additional data sources
+  # additionalDataSources: []
+
+# Нужен ли ingress? 
+# Тут врпинципе много настроек, в которых надо копаться. Тот же упоминание LoadBalancer ищи.
+# Что за танос? Ему можно передать секрет к алёрт-менеджеру
+# Prometheus configuration
+prometheus:
+  prometheusSpec:
+    # По дефолту нет persistance
+    # Storage configuration
+    # storageSpec:
+    #   volumeClaimTemplate:
+    #     spec:
+    #       storageClassName: local-path-delete
+    #       accessModes: ["ReadWriteOnce"]
+    #       resources:
+    #         requests:
+    #           storage: 20Gi
+    
+
+    # Дефолт
+    # ## How long to retain metrics
+    # ##
+    # retention: 10d
+    # ## Maximum size of metrics
+    # ## Unit format should be in the form of "50GiB"
+    # retentionSize: ""
+    
+    # не уверен что это на деле. Разообраться.
+    # Additional scrape configs for custom targets
+    # additionalScrapeConfigs: []
+
+# Node Exporter configuration
+nodeExporter:
+  enabled: true
+  operatingSystems:
+    linux:
+      enabled: true
+    aix:
+      enabled: true # мб выключать?
+    darwin:
+      enabled: true # мб выключать?
+
+
+# Чат гпт сгенерил. Отличается от дефолтных?
+# # ServiceMonitor configuration
+# defaultRules:
+#   create: true
+#   rules:
+#     alertmanager: true
+#     etcd: true
+#     configReloaders: true
+#     general: true
+#     k8s: true
+#     kubeApiserverAvailability: true
+#     kubeApiserverBurnrate: true
+#     kubeApiserverHistogram: true
+#     kubeApiserverSlos: true
+#     kubelet: true
+#     kubeProxy: true
+#     kubePrometheusGeneral: true
+#     kubePrometheusNodeRecording: true
+#     kubernetesApps: true
+#     kubernetesResources: true
+#     kubernetesStorage: true
+#     kubernetesSystem: true
+#     kubeScheduler: true
+#     kubeState: true
+#     kubelet: true
+#     network: true
+#     node: true
+#     nodeExporterAlerting: true
+#     nodeExporterRecording: true
+#     prometheus: true
+#     prometheusOperator: true
+
+# хз что это. разобраться.
+# Additional PrometheusRules
+# additionalPrometheusRulesMap: {}
+
+
+# # Kube State Metrics configuration
+# kubeStateMetrics:
+#   enabled: true
+
+# # Kubelet configuration
+# kubelet:
+#   enabled: true
+#   serviceMonitor:
+#     interval: 30s
+
+# # KubeDns configuration
+# kubeDns:
+#   enabled: false
+
+# # KubeEtcd configuration
+# kubeEtcd:
+#   enabled: true
+
+# # KubeControllerManager configuration
+# kubeControllerManager:
+#   enabled: true
+
+# # KubeScheduler configuration
+# kubeScheduler:
+#   enabled: true
+
+# # KubeProxy configuration
+# kubeProxy:
+#   enabled: true
+
+# # KubeApiServer configuration
+# kubeApiServer:
+#   enabled: true
