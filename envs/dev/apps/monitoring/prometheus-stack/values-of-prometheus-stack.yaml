@@ -32,6 +32,9 @@ alertmanager:
   # По дефолту это отключено. Почему? Алертменеджеру нужен всё-таки persistent или нет?
   # Storage configuration
   alertmanagerSpec:
+    # Fix for nil pointer error - portName field
+    portName: "web"
+    
     # storage:
     #   volumeClaimTemplate:
     #     spec:
