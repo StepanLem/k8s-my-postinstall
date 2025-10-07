@@ -1,0 +1,4 @@
+image:
+  repository: https://gitlab.com/transcriber-app/nginx-frontend
+  pullPolicy: IfNotPresent
+  tag: 0.0.1
