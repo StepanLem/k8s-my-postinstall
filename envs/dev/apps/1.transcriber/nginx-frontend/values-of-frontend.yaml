@@ -1,5 +1,5 @@
 image:
-  repository: https://gitlab.com/transcriber-app/nginx-frontend
+  repository: registry.gitlab.com/transcriber-app/nginx-frontend
   pullPolicy: IfNotPresent
   tag: v0.0.1
 
