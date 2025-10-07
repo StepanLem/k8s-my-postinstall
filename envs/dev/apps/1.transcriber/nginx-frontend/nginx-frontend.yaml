@@ -11,7 +11,7 @@ metadata:
 spec:
   project: default
   sources: # кстати если интересно git - к закрытым репо, к которым ssh доступ есть, а https к публичным обычно.
-    - repoURL: git@gitlab.com:transcriber-app/nginx-frontend.git # репо с чартом.
+    - repoURL: https://gitlab.com/transcriber-app/nginx-frontend.git # репо с чартом.
       targetRevision: main
       path: charts/nginx-frontend # путь до чарта в репо с чартом.
       helm:
