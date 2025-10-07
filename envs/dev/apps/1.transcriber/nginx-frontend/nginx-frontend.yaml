@@ -16,7 +16,7 @@ spec:
       path: charts/nginx-frontend # путь до чарта в репо с чартом.
       helm:
         valueFiles:
-          - $values/envs/dev/apps/1.transcriber/nginx-frontend/values.yaml # путь до values в репо с values.
+          - $values/envs/dev/apps/1.transcriber/nginx-frontend/values-of-frontend.yaml # путь до values в репо с values.
     - repoURL: https://github.com/StepanLem/k8s-my-postinstall.git # репо с vaules.
       targetRevision: main
       ref: values
