@@ -1,0 +1,21 @@
+image:
+  repository: registry.gitlab.com/transcriber-app/noauth-transcriber
+  pullPolicy: IfNotPresent
+  tag: v0.0.1
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: noauth.veryred.ru
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: noauth-transcriber-tls
+      hosts:
+        - noauth.veryred.ru
+
+
