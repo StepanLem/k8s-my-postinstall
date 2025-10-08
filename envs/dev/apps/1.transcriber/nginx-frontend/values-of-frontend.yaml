@@ -1,7 +1,7 @@
 image:
   repository: registry.gitlab.com/transcriber-app/nginx-frontend
   pullPolicy: IfNotPresent
-  tag: v0.0.25
+  tag: ${CI_COMMIT_TAG}
 ingress:
   enabled: true
   className: "nginx"
