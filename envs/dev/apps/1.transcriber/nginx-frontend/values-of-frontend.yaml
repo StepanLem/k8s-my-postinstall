@@ -1,5 +1,5 @@
 image:
-  tag: ${CI_COMMIT_TAG}
+  tag: v0.0.27
 ingress:
   enabled: true
   className: "nginx"
