@@ -1,22 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: noauth-transcriber
+  name: main-backend
   namespace: argocd
   labels:
-    app.kubernetes.io/name: noauth-transcriber
+    app.kubernetes.io/name: main-backend
     app.kubernetes.io/component: backend
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   sources:
-    - repoURL: https://gitlab.com/transcriber-app/noauth-transcriber.git
+    - repoURL: https://gitlab.com/faces-app/main-backend.git
       targetRevision: main
-      path: charts/noauth-transcriber
+      path: charts/main-backend
       helm:
         valueFiles:
-          - $values/envs/dev/apps/1.transcriber/noauth-transcriber/values-of-noauth-transcriber.yaml
+          - $values/envs/dev/apps/1.transcriber/main-backend/values-of-main-backend.yaml
     - repoURL: https://github.com/StepanLem/k8s-my-postinstall.git
       targetRevision: main
       ref: values
@@ -42,4 +42,3 @@ spec:
         factor: 2
         maxDuration: 3m
   revisionHistoryLimit: 10 # default - 10
-
