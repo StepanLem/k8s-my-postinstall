@@ -11,7 +11,7 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://gitlab.com/faces-app/main-backend.git
+    - repoURL: https://gitlab.com/transcriber-app/main-backend.git
       targetRevision: main
       path: charts/main-backend
       helm:
