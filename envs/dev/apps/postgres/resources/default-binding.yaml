@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: postgres-portforward-default-binding
+  namespace: default # привязываем к namespace default
+subjects:
+  - kind: ServiceAccount
+    name: dev-access
+    namespace: postgres # ServiceAccount находится в namespace postgres
+roleRef:
+  kind: Role
+  name: postgres-portforward-default
+  apiGroup: rbac.authorization.k8s.io

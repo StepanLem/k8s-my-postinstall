@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: postgres-portforward-binding
+  namespace: postgres # namespace самого rbac = namespace куда будет доступ
+subjects:
+  - kind: ServiceAccount # а чё не User. User с оидик только.
+    name: dev-access
+    namespace: postgres
+roleRef:
+  kind: Role
+  name: postgres-portforward
+  apiGroup: rbac.authorization.k8s.io
