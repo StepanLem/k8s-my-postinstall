@@ -36,35 +36,5 @@ current-context: dev-access-context
 
 
 4. Этот токен истчёт через время. Обычно их делают для разовых отладок разработчиками. 
-А норм доступ девопсам через oidic.
-То есть по сути разраб запросил в маленькой компании - ты дал доступ на час например.
-
-## Что может делать разработчик с этим токеном:
-
-### В namespace postgres:
-- Просматривать поды и сервисы PostgreSQL
-- Делать port-forward к PostgreSQL
-
-### В namespace default (transcriber приложения):
-- Просматривать поды, сервисы, конфиги, секреты
-- Просматривать deployments, replicasets, ingresses
-- Делать port-forward к любым подам в namespace default
-
-### Примеры команд:
-```bash
-# Просмотр подов PostgreSQL
-kubectl get pods -n postgres
-
-# Port-forward к PostgreSQL
-kubectl port-forward -n postgres pod/postgresql-0 5432:5432
-
-# Просмотр приложений transcriber
-kubectl get pods -n default
-kubectl get services -n default
-kubectl get deployments -n default
-
-# Port-forward к любому приложению transcriber
-kubectl port-forward -n default pod/main-backend-xxx 8080:8080
-kubectl port-forward -n default pod/frontend-xxx 3000:80
-```
-
+А норм доступ девопсам/sre через oidic.
+То есть по сути разраб запросил в маленькой компании - ты дал доступ на час например. Но на самом деле в мелких у разрабов есть доступ на дев полный походу для удобства.
