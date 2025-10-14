@@ -13,7 +13,7 @@ gitlabUrl: "https://gitlab.com" # или ваш GitLab instance URL
 runnerRegistrationToken: "" # токен регистрации из GitLab. Задаётся не здесь, а в runners секрет.
 # , да и не задаётся впринципе вроде.
 
-# ready и live пробы мне самому писать? Почему они закоментированны в ориганльном чарте*
+# ready и live пробы мне самому писать? Почему они закоментированны в ориганльном чарте?
 
 concurrent: 10
 
@@ -22,7 +22,8 @@ concurrent: 10
 runners:
 
   # namespace в котором будут создаваться поды
-  jobNamespace: gitlab-jobs
+  # Там походу надо service account менять вместе с изменением этого
+  # jobNamespace: gitlab-jobs # тебе надо создать его вручную заранее? хз. 
 
   ## The name of the secret containing runner-token and runner-registration-token. 
   ## надо написать в чём между ними разница. И как там ломается при обнолвении пода. Крч явно написать об этом.
@@ -38,6 +39,21 @@ runners:
       [runners.kubernetes]
         namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
         image = "alpine"
+
+# Это ошибка в логах. Видимо надо в конфиге ранера выше сделать concurency.
+#   WARNING: CONFIGURATION: Long polling issues detected.
+# Issues found:
+#   - Request bottleneck: 1 runners have request_concurrency=1, causing job delays during long polling
+# This can cause job delays matching your GitLab instance's long polling timeout.
+# Recommended solutions:
+#   1. Increase 'request_concurrency' to 2-4 for 1 runners currently using request_concurrency=1
+# Note: The 'FF_USE_ADAPTIVE_REQUEST_CONCURRENCY' feature flag can help automatically adjust request_concurrency based on workload.
+# This message will be printed each time the configuration is reloaded if the issues persist.
+# See documentation: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#long-polling-issues  builds=0 max_builds=10
+# listen_address not defined, metrics & debug endpoints disabled  builds=0 max_builds=10
+# [session_server].listen_address not defined, session endpoints disabled  builds=0 max_builds=10
+# Initializing executor providers                     builds=0 max_builds=10
+  
 
 # Resources configuration
 resources:
