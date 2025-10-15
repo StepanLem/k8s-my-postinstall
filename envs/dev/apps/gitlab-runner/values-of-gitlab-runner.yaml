@@ -42,20 +42,10 @@ runners:
         namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
         image = "alpine"
         privileged = false
-        cpu_request = "500m"
-        memory_request = "1Gi"
-        cpu_limit = "1"
-        memory_limit = "2Gi"
-        helper_image = "registry.gitlab.com/gitlab-org/gitlab-runner/gitlab-runner-helper:x86_64-latest"
-        pod_labels = { "app" = "buildah-job" }
-        [runners.kubernetes.security_context]
-          run_as_user = 1000
-          run_as_non_root = true
-          capabilities = []
 
-        [[runners.kubernetes.volumes.empty_dir]]
-          name = "containers"
-          mount_path = "/var/lib/containers" 
+# [[runners.kubernetes.volumes.empty_dir]]
+#   name = "containers"
+#   mount_path = "/var/lib/containers" 
 
 # Это ошибка в логах. Видимо надо в конфиге ранера выше сделать concurency.
 #   WARNING: CONFIGURATION: Long polling issues detected.
