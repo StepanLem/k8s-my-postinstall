@@ -22,8 +22,9 @@ concurrent: 10
 runners:
 
   # namespace в котором будут создаваться поды
-  # Там походу надо service account менять вместе с изменением этого
-  # jobNamespace: gitlab-jobs # тебе надо создать его вручную заранее? хз. 
+  # TODO 1. Там 100% надо service account и/или роль менять вместе с изменением этого, чтобы заработало.
+  # TODO 2. Namespace автоматом создаётся или вручную надо? Узнать.
+  # jobNamespace: gitlab-jobs
 
   ## The name of the secret containing runner-token and runner-registration-token. 
   ## надо написать в чём между ними разница. И как там ломается при обнолвении пода. Крч явно написать об этом.
@@ -36,9 +37,21 @@ runners:
   # Где cpu и memory смотреть выставлять. тут в конфиге конечно. Выставить.
   config: |
     [[runners]]
+      executor = "kubernetes"
       [runners.kubernetes]
         namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
         image = "alpine"
+        privileged = false
+        cpu_request = "500m"
+        memory_request = "1Gi"
+        cpu_limit = "1"
+        memory_limit = "2Gi"
+        helper_image = "registry.gitlab.com/gitlab-org/gitlab-runner/gitlab-runner-helper:x86_64-latest"
+        pod_labels = { "app" = "buildah-job" }
+
+        [[runners.kubernetes.volumes.empty_dir]]
+          name = "containers"
+          mount_path = "/var/lib/containers" 
 
 # Это ошибка в логах. Видимо надо в конфиге ранера выше сделать concurency.
 #   WARNING: CONFIGURATION: Long polling issues detected.
