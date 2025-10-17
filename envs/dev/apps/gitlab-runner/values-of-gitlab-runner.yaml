@@ -38,6 +38,7 @@ runners:
   config: |
     [[runners]]
       executor = "kubernetes"
+      request_concurrency = 4 # Adjust as needed
       [runners.kubernetes]
         namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
         image = "alpine"
