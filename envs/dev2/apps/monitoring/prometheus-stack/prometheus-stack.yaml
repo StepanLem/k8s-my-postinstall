@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
-      targetRevision: 78.5.0 # chart-version
+      targetRevision: 74.2.2 # chart-version
       helm:
         valueFiles:
           - $values/envs/dev2/apps/monitoring/prometheus-stack/values-of-prometheus-stack.yaml
@@ -27,3 +27,12 @@ spec:
     syncOptions:
       - CreateNamespace=true
       #- ServerSideApply=true чат гпт добавил
+      # Без этой штуки высирает ошибку, что: crd не могут скачаться из-за слишком большого размера.
+      # обсуждения ошибки и ограничения argocd описываются если гуглить:
+      # "prometheus stack one or more synchronization tasks completed unsuccessfully, reason: CustomResourceDefinition.apiextensions.k8s."
+      # У этой ошибки есть два решения проблемы:
+      # а) ServerSideApply=true # минус этого способа? Оф доку надо прочесть.
+      # б) вручную sync(with replace) несинхронизированные ресурсы(то есть crd)
+
+
+      
