@@ -1,4 +1,8 @@
 ---
+
+# ТЕБЕ ЭТО НЕ НАДО. Тут запары больше, чем пользы. lens - лучше!
+
+
 - name: Установка Kubernetes Dashboard
   hosts: kubernetes
   gather_facts: yes
