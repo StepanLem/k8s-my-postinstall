@@ -1,0 +1,9 @@
+
+grafana:
+  enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - grafana.dev2.veryred.ru
+
