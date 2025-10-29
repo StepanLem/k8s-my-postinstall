@@ -75,6 +75,11 @@
         state: present
         src: "{{ playbook_dir }}/local-path-storage-class-delete.yaml"
 
+    - name: Применение StorageClass local-path-retain
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ playbook_dir }}/local-path-storage-class-retain.yaml"
+
     - name: Диагностика подов local-path-provisioner
       kubernetes.core.k8s_info:
         api_version: v1
@@ -84,6 +89,7 @@
           - "app.kubernetes.io/name=local-path-provisioner"
       register: provisioner_pods
 
+# вот после этого ошибку кидает.
     - name: Вывод статуса подов
       debug:
         msg: |
