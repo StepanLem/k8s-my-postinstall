@@ -26,13 +26,13 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      #- ServerSideApply=true чат гпт добавил
-      # Без этой штуки высирает ошибку, что: crd не могут скачаться из-за слишком большого размера.
+      - ServerSideApply=true 
+      # ServerSideApply. Без этой штуки высирает ошибку, что: crd не могут примениться из-за слишком большого размера.
       # обсуждения ошибки и ограничения argocd описываются если гуглить:
       # "prometheus stack one or more synchronization tasks completed unsuccessfully, reason: CustomResourceDefinition.apiextensions.k8s."
       # У этой ошибки есть два решения проблемы:
-      # а) ServerSideApply=true # минус этого способа? Оф доку надо прочесть.
-      # б) вручную sync(with replace) несинхронизированные ресурсы(то есть crd)
+      # а) ServerSideApply=true # минусы этого способа? В контексте prometheus-stack уместно.
+      # б) вручную sync(with replace) несинхронизированные ресурсы(то есть crd). Но придётся так каждый раз делать при обновлении версии. Неудобно.
 
 
       
