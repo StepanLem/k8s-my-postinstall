@@ -31,7 +31,7 @@ spec:
       # обсуждения ошибки и ограничения argocd описываются если гуглить:
       # "prometheus stack one or more synchronization tasks completed unsuccessfully, reason: CustomResourceDefinition.apiextensions.k8s."
       # У этой ошибки есть два решения проблемы:
-      # а) ServerSideApply=true # минусы этого способа? В контексте prometheus-stack уместно.
+      # а) ServerSideApply=true # У этого поля есть минусы, но в контексте prometheus-stack уместно.
       # б) вручную sync(with replace) несинхронизированные ресурсы(то есть crd). Но придётся так каждый раз делать при обновлении версии. Неудобно.
 
 
