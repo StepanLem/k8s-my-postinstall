@@ -1,5 +1,5 @@
 image:
-  tag: v0.0.33
+  tag: v0.0.34
 ingress:
   enabled: true
   className: "nginx"
