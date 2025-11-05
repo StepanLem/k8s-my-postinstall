@@ -1,0 +1,64 @@
+# версию и values смотри на артифкатхаб:
+# https://artifacthub.io/packages/helm/grafana/loki
+
+
+# Тут указана конфигурация для dev.
+# Пока что не требовалось настраивать для прода. Мб там elk всегда просто?
+
+
+
+# Для dev окружения используем SingleBinary - проще и не требует object storage.
+deploymentMode: SingleBinary
+
+# Gateway для доступа к Loki (включен по умолчанию, нужен для Grafana)
+# gateway:
+#   enabled: true
+
+# SingleBinary конфигурация
+singleBinary:
+  replicas: 1
+  persistence:
+    enabled: true
+    size: 10Gi
+    # storageClass: ""  # используй local-path-provisioner если есть. Пусто-используется дефолтный
+
+# Основная конфигурация Loki
+loki:
+  # Отключаем auth для dev (для простоты)
+  auth_enabled: false # это чё значит? А если включить?
+  
+  commonConfig:
+    path_prefix: /var/loki
+  
+  schemaConfig:
+    configs:
+      - from: 2024-01-01
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+  
+  # Storage конфигурация для filesystem (для SingleBinary)
+  storage:
+    type: filesystem 
+    filesystem:
+      chunks_directory: /var/loki/chunks
+      rules_directory: /var/loki/rules
+
+# Service для доступа к Loki (будет доступен как loki.monitoring.svc.cluster.local)
+# По умолчанию создается автоматически
+
+# Для подключения Loki к Grafana добавь в prometheus-stack values-of-prometheus-stack.yaml:
+# grafana:
+#   additionalDataSources:
+#     - name: Loki
+#       type: loki
+#       access: proxy
+#       url: http://loki-dev-gateway.monitoring.svc.cluster.local:80
+#       isDefault: false
+#       jsonData:
+#         maxLines: 1000
+# 
+# Или проверь имя сервиса: kubectl get svc -n monitoring | grep loki
