@@ -21,7 +21,7 @@ singleBinary:
   persistence:
     enabled: true
     size: 10Gi
-    # storageClass: ""  # используй local-path-provisioner если есть. Пусто-используется дефолтный
+    storageClass: "local-path-delete"  # используй local-path-provisioner если есть. А чё пустой не работает?
 
 # Component replicas(0 when using SingleBinary)
 write:
