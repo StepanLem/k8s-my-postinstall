@@ -5,6 +5,7 @@
 # Тут указана конфигурация для dev.
 # Пока что не требовалось настраивать для прода. Мб там elk всегда просто?
 
+# Бля тут такая тупость. Какие-то говно дефолтные значения.
 
 
 # Для dev окружения используем SingleBinary - проще и не требует object storage.
@@ -22,6 +23,15 @@ singleBinary:
     size: 10Gi
     # storageClass: ""  # используй local-path-provisioner если есть. Пусто-используется дефолтный
 
+# Component replicas(0 when using SingleBinary)
+write:
+  replicas: 0
+read:
+  replicas: 0
+backend:
+  replicas: 0
+
+
 # Основная конфигурация Loki
 loki:
   # Отключаем auth для dev (для простоты)
@@ -29,16 +39,19 @@ loki:
   
   commonConfig:
     path_prefix: /var/loki
+    replication_factor: 1
   
-  schemaConfig:
-    configs:
-      - from: 2024-01-01
-        store: tsdb
-        object_store: filesystem
-        schema: v13
-        index:
-          prefix: index_
-          period: 24h
+  # по нормальному надо schemaConfig настраивать. Бля крч походу надо будет глубже в эту хйню копать.
+  useTestSchema: true
+  # schemaConfig:
+  #   configs:
+  #     - from: 2024-01-01
+  #       store: tsdb
+  #       object_store: filesystem
+  #       schema: v13
+  #       index:
+  #         prefix: index_
+  #         period: 24h
   
   # Storage конфигурация для filesystem (для SingleBinary)
   storage:
@@ -46,6 +59,20 @@ loki:
     filesystem:
       chunks_directory: /var/loki/chunks
       rules_directory: /var/loki/rules
+  
+
+# Caching. Без понятия зачем это
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+
+# Helm test
+test:
+  enabled: false
+
+  
+
 
 # Service для доступа к Loki (будет доступен как loki.monitoring.svc.cluster.local)
 # По умолчанию создается автоматически
@@ -62,3 +89,4 @@ loki:
 #         maxLines: 1000
 # 
 # Или проверь имя сервиса: kubectl get svc -n monitoring | grep loki
+
