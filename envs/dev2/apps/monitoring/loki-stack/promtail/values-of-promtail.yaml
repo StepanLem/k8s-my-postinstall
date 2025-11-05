@@ -1,0 +1,38 @@
+
+
+# версию и values смотри на артифкатхаб:
+# https://artifacthub.io/packages/helm/grafana/promtail
+
+
+
+# где указывается с каким хостов собирать метрики
+
+# Всё, что тебе нужно это: настроить конфиг промтейла.
+config:
+
+  # дефолтный значения которые вообще не влияют ни на что важного.
+  # enabled: true
+  # logLevel: info # логЛвл самого promteyl, а не того что он собирает. То есть: Вообще без разницы. 
+  # logFormat: logfmt # на это тоже вообще пофиг. Это логФормат для логов самого промтейла.
+  # serverPort: 3101
+
+  clients:
+    # URL для отправки логов в Loki
+    # Для SingleBinary без gateway используем прямой URL к сервису
+    # Проверь имя сервиса: kubectl get svc -n monitoring | grep loki
+    # Обычно для SingleBinary: loki-dev.monitoring.svc.cluster.local:3100
+    # Если gateway включен: loki-dev-gateway.monitoring.svc.cluster.local:80
+    - url: http://loki-dev.monitoring.svc.cluster.local:3100/loki/api/v1/push
+
+  # positions:
+  #   filename: /run/promtail/positions.yaml
+
+  # scrape_configs не указан - используется дефолтная конфигурация из чарта
+  # Дефолтная конфигурация собирает логи со всех pod'ов в Kubernetes
+  # Логи собираются из /var/log/pods/* (стандартное место для логов в K8s)
+  # Promtail автоматически находит все pod'ы через Kubernetes Service Discovery
+
+
+
+# Там можно дополнительные configs делать, например чтобы системные поды не опрашивать.
+# Но я предпологаю, что я быстрее на elk перейду, чем мне потребуется с loki глубже копать.
