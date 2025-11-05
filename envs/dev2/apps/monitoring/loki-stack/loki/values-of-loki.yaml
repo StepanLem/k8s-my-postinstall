@@ -19,7 +19,7 @@ deploymentMode: SingleBinary
 singleBinary:
   replicas: 1
   persistence:
-    enabled: false # у меня какая-то проблема с персистентностью или чё? Фигали не создаются волюмы???
+    enabled: true  # ОБЯЗАТЕЛЬНО включить для filesystem storage!
     size: 10Gi
     storageClass: "local-path-retain"  # используй local-path-provisioner если есть. Пусто - используется дефолтный
 
