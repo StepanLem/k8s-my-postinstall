@@ -5,7 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: local-path-retain
+  storageClassName: longhorn
   resources:
     requests:
       storage: 1Gi
