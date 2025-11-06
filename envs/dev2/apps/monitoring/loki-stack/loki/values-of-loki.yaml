@@ -21,7 +21,7 @@ singleBinary:
   persistence:
     enabled: true  # ОБЯЗАТЕЛЬНО включить для filesystem storage!
     size: 10Gi
-    storageClass: "local-path-retain"  # используй local-path-provisioner если есть. Пусто - используется дефолтный
+    storageClass: "longhorn"  # используй local-path-provisioner если есть. Пусто - используется дефолтный
 
 # Component replicas(0 when using SingleBinary)
 write:
