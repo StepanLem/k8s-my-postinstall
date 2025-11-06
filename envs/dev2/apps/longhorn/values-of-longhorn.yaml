@@ -1,0 +1,52 @@
+
+
+# версию и values смотри на артифкатхаб:
+# https://artifacthub.io/packages/helm/longhorn/longhorn
+
+
+# дальше не проверял. По сути всё пусто норм работает.
+# мб можно в values конфиг как-то пробросить? или так не делают?
+
+
+
+
+# Longhorn - distributed block storage для Kubernetes
+# После установки Longhorn создаёт StorageClass с именем 'longhorn'
+
+# Базовые настройки (можно раскомментировать и настроить по необходимости)
+
+# ingress:
+#   enabled: true
+#   ingressClassName: nginx
+#   annotations:
+#     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+#   hosts:
+#     - host: longhorn.dev2.veryred.ru
+#   tls:
+#     - secretName: longhorn-tls-secret
+#       hosts:
+#         - longhorn.dev2.veryred.ru
+
+# persistence:
+#   defaultClass: true
+#   defaultClassReplicaCount: 3
+#   defaultDataLocality: disabled
+#   defaultDataPath: /var/lib/longhorn
+
+# defaultSettings:
+#   defaultDataPath: /var/lib/longhorn
+#   defaultDataLocality: disabled
+#   defaultReplicaCount: 3
+#   defaultReplicaAutoBalance: ignored
+#   defaultLonghornStaticStorageClass: longhorn-static
+#   backupTarget: ""
+#   backupTargetCredentialSecret: ""
+#   allowRecurringJobWhileVolumeDetached: true
+#   createDefaultDiskLabeledNodes: true
+#   replicaSoftAntiAffinity: true
+#   storageOverProvisioningPercentage: 200
+#   storageMinimalAvailablePercentage: 25
+#   upgradeChecker: true
+#   allowVolumeCreationWithDegradedAvailability: true
+#   v2DataEngine: false
+
