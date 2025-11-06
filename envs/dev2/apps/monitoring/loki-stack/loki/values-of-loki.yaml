@@ -11,9 +11,13 @@
 # Для dev окружения используем SingleBinary - проще и не требует object storage.
 deploymentMode: SingleBinary
 
+global:
+  dnsService: coredns # "kube-dns" по дефолту 
+
 # Gateway для доступа к Loki (включен по умолчанию, нужен для Grafana)
-# gateway:
-#   enabled: true
+# реально так нужен? погуглить зачем он. 
+gateway:
+  enabled: true
 
 # SingleBinary конфигурация
 singleBinary:
