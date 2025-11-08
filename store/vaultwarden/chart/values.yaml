@@ -1,0 +1,120 @@
+# !!! чарт сгенерен ГПТшкой. Местами круто, местами может быть фигня. Не улучшал. Но он не плох.
+
+
+
+# Default values for vaultwarden
+image:
+  repository: vaultwarden/server
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Для Vaultwarden ServiceAccount не обязателен, т.к. приложение не обращается к K8s API
+  # Создавать отдельный SA имеет смысл только если нужны imagePullSecrets или RBAC права
+  create: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: vaultwarden.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+    # - secretName: vaultwarden-tls
+    #   hosts:
+    #     - vaultwarden.example.com
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Persistent volume for data storage
+persistence:
+  enabled: true
+  storageClass: local-path-delete # пустой бы по дефолту сделать
+  accessMode: ReadWriteOnce
+  size: 10Gi
+  annotations: {}
+
+# Environment variables
+env:
+  DOMAIN: ""
+  # Additional environment variables can be added here
+  # ADMIN_TOKEN: ""
+  # SIGNUPS_ALLOWED: "true"
+  # INVITATIONS_ALLOWED: "true"
+
+# Additional environment variables from secrets/configmaps
+envFrom: []
+
+# Liveness and readiness probes
+livenessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Deployment settings
+replicaCount: 1
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+

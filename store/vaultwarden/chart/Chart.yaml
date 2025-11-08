@@ -1,0 +1,13 @@
+apiVersion: v2
+name: vaultwarden
+description: A Helm chart for Vaultwarden (Bitwarden compatible server)
+type: application
+version: 0.1.0
+appVersion: "latest"
+keywords:
+  - vaultwarden
+  - bitwarden
+  - password-manager
+maintainers:
+  - name: k8s-postinstall
+

@@ -1,0 +1,16 @@
+https://github.com/dani-garcia/vaultwarden
+
+Helm chart для деплоя Vaultwarden в Kubernetes.
+
+Структура:
+- chart/ - Helm chart
+- envs/dev2/apps/vaultwarden/ - ArgoCD Application и values файл
+
+Деплой через ArgoCD:
+1. Применить vaultwarden.yaml в ArgoCD
+2. Настроить values-of-vaultwarden.yaml (домен, storage, ресурсы)
+
+Основные параметры:
+- DOMAIN - домен для доступа к Vaultwarden
+- persistence - persistent storage для данных (/data)
+- ingress - настройка ingress с TLS через cert-manager

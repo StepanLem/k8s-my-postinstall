@@ -81,6 +81,8 @@ test:
 # Service для доступа к Loki (будет доступен как loki.monitoring.svc.cluster.local)
 # По умолчанию создается автоматически
 
+# кстати почему именно loki-dev-gateway, почему не сервис напрямую???
+
 # Для подключения Loki к Grafana добавь в prometheus-stack values-of-prometheus-stack.yaml:
 # grafana:
 #   additionalDataSources:

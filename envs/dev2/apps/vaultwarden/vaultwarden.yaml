@@ -1,28 +1,29 @@
 apiVersion: argoproj.io/v1alpha1
-kind: -Application
+kind: Application
 metadata:
-  name: loki-dev
+  name: vaultwarden-dev
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   sources:
-    - repoURL: https://grafana.github.io/helm-charts
-      chart: loki
-      targetRevision: 6.42.0 # chart-version
+    - repoURL: https://github.com/StepanLem/k8s-my-postinstall.git
+      targetRevision: main
+      path: store/vaultwarden/chart
       helm:
         valueFiles:
-          - $values/envs/dev/apps/monitoring/loki/values-of-loki.yaml
+          - $values/envs/dev2/apps/vaultwarden/values-of-vaultwarden.yaml
     - repoURL: https://github.com/StepanLem/k8s-my-postinstall.git
       targetRevision: main
       ref: values
   destination:
     server: https://kubernetes.default.svc
-    namespace: monitoring
+    namespace: vaultwarden
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+
