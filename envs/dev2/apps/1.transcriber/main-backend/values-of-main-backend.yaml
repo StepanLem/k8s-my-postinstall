@@ -1,0 +1,15 @@
+image:
+  tag: v0.0.7
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+    - host: main-backend.dev.veryred.ru
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: main-backend-tls
+      hosts:
+        - main-backend.dev.veryred.ru
+

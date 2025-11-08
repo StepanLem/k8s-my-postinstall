@@ -1,0 +1,132 @@
+# Keycloak configuration for development environment
+
+# версию и values смотри на артифактхаб:
+# https://artifacthub.io/packages/helm/bitnami/keycloak
+
+# Global configuration
+global:
+  storageClass: local-path-delete
+  security:
+    allowInsecureImages: true # Разрешить использование неофициальных образов
+
+# Image configuration
+image:
+  registry: docker.io
+  repository: bitnamilegacy/keycloak
+  tag: 26.3.3-debian-12-r0
+  pullPolicy: IfNotPresent
+
+# Authentication configuration
+auth:
+  adminUser: admin
+  # existingSecret: "" # использовать существующий секрет c паролем # ну ты понял крч. Тут надо либо надстройку над чартом делать
+  existingSecret: keycloak-credentials
+  passwordSecretKey: admin-password # ключ в секрете для пароля
+
+# Database configuration (using embedded H2 for dev)
+postgresql:
+  enabled: false # отключаем внешний PostgreSQL для dev среды
+
+# Persistence configuration
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClass: local-path-delete
+  accessModes:
+    - ReadWriteOnce
+
+# Resources configuration
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "250m"
+  limits:
+    memory: "2Gi"
+    cpu: "1000m"
+
+# Node selector (optional)
+# nodeSelector:
+#   kubernetes.io/hostname: node3
+
+# Ingress configuration
+ingress:
+  enabled: true
+  hostname: keycloak.dev.veryred.ru
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  ingressClassName: nginx
+  extraTls:
+    - hosts:
+        - keycloak.dev.veryred.ru
+      secretName: keycloak-tls
+
+# Service configuration
+service:
+  type: ClusterIP
+  ports:
+    http: 8080
+    https: 8443
+
+# Metrics configuration
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+
+# Network policies
+networkPolicy:
+  enabled: false
+
+# Proxy configuration
+proxy:
+  enabled: true
+  type: edge
+
+# TLS configuration
+tls:
+  enabled: false # отключаем TLS для dev среды
+
+# Extra environment variables
+extraEnvVars:
+  - name: KEYCLOAK_HTTP_ENABLED
+    value: "true"
+  - name: KEYCLOAK_HTTP_PORT
+    value: "8080"
+  - name: KEYCLOAK_HOSTNAME_STRICT
+    value: "false"
+  - name: KEYCLOAK_HOSTNAME_STRICT_HTTPS
+    value: "false"
+
+# Java options
+javaOpts: "-Xms512m -Xmx1024m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m"
+
+# Health checks
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 300
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+# Startup probe
+startupProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 30
+  successThreshold: 1
+
+
+
+
