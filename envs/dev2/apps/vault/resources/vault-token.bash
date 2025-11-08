@@ -6,5 +6,5 @@ metadata:
   namespace: default
 type: Opaque
 stringData:
-  token: <your-token>
+  token: <your-token> 
 EOF
