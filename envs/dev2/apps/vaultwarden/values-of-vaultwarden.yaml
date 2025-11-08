@@ -6,20 +6,20 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
   hosts:
-    - host: vaultwarden.dev.veryred.ru
+    - host: vaultwarden.veryred.ru
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: vaultwarden-tls
       hosts:
-        - vaultwarden.dev.veryred.ru
+        - vaultwarden.veryred.ru
 
 persistence:
   storageClass: longhorn # поменять на longhorn-retain, но его создать сначала надо бы 
 
 env:
-  DOMAIN: "https://vaultwarden.dev.veryred.ru"
+  DOMAIN: "https://vaultwarden.veryred.ru"
   # Uncomment and configure as needed:
   # ADMIN_TOKEN: ""
   # SIGNUPS_ALLOWED: "true"
