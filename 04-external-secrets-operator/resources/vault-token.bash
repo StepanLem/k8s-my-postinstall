@@ -1,0 +1,10 @@
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vault-token
+  namespace: default
+type: Opaque
+stringData:
+  token: <your-token> 
+EOF
