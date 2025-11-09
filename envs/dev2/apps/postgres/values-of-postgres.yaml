@@ -9,10 +9,10 @@ global:
     auth:
       # крч если сделать так, то первого пользователя не будет. Всё равно тебе же подключаться и вручную создавать пароль с базой для будущих команд.
       # но для автоматического тестирования норм в values указывать как я понимаю.
-      # enablePostgresUser: false
-      # username: ""
-      # password: ""
-      # database: ""
+      enablePostgresUser: false
+      username: ""
+      password: ""
+      database: ""
 
       # # existingSecret: "" # тут ты передаёшь имя секрета
       # existingSecret: postgres-credentials
