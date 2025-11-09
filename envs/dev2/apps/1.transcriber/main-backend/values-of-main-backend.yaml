@@ -13,3 +13,25 @@ ingress:
       hosts:
         - main-backend.dev.veryred.ru
 
+
+env:
+  externalSecret:
+    secretStore: "vault-cluster-store"
+
+  db:
+    DB_HOST: "postgres-dev-postgresql.postgres.svc.cluster.local"
+    DB_PORT: "5432"
+    DB_NAME: "dev_db" # надо вручную заранее создать!
+    DB_USER: "dev_user" # надо вручную заранее создать вместе с паролем записанным в vault!
+    DB_PASSWORD:
+      externalSecret:
+        vaultPath: "teams/backend/dev/transcriber/bd/svc-main-backend"
+        vaultKey: "database-password"
+        secretKey: "database-password" # ключ в Kubernetes секрете
+
+  app:
+    ADMIN_SECRET:
+      externalSecret:
+        vaultPath: "teams/backend/dev/transcriber/admin-panel"
+        vaultKey: "password"
+        secretKey: "password" # ключ в Kubernetes секретеща напишу здесь всякое.
