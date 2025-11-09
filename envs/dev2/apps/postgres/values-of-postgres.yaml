@@ -40,7 +40,7 @@ primary:
     enabled: true
     # existingClaim: "" # заполнить это и остальное про выдачу pvc будет игнорироваться.
     size: 8Gi
-    storageClass: local-path-delete
+    storageClass: longhorn
     accessModes:
       - ReadWriteOnce
     # mountPath: /bitnami/postgresql # куда монитруется volume внутри контейнера.
