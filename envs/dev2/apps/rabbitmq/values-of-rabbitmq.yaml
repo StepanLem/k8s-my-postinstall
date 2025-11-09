@@ -5,7 +5,7 @@
 
 # Global configuration
 global:
-  storageClass: local-path-delete # на что виляет здесь указание?
+  storageClass: longhorn # на что виляет здесь указание?
   security:
     allowInsecureImages: true # Разрешить использование неофициальных образов (чтобы дало из legacy репощитория брать))
 
@@ -43,7 +43,7 @@ clustering:
 persistence:
   enabled: true
   size: 8Gi
-  storageClass: local-path-delete
+  storageClass: longhorn
   accessModes:
     - ReadWriteOnce
   # mountPath: /opt/bitnami/rabbitmq/.rabbitmq/mnesia # куда монтируется volume внутри контейнера
