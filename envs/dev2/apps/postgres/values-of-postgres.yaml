@@ -7,22 +7,30 @@
 global:
   postgresql:
     auth:
-      # крч если сделать так, то первого пользователя не будет. Всё равно тебе же подключаться и вручную создавать пароль с базой для будущих команд.
-      # но для автоматического тестирования норм в values указывать как я понимаю.
-      enablePostgresUser: false
-      username: ""
-      password: ""
-      database: ""
+      # Тут два уровня аккаунтов и паролей.
+      # - Один аккаунт админа постгрес(буквально админка, только через терминал изнутри shell, а не через ui)
+      # - Дальше уже можно создавать аккаунты для управления бд.
+      # То есть: тут НАДО задать пароль для админа!!!
+          # А базы и пользователей создавать как и из админки(то есть обычная работа),
+          # так и скриптом в values в initdbScripts (это для тестов используется). 
 
-      # # existingSecret: "" # тут ты передаёшь имя секрета
+      ## @param global.postgresql.auth.postgresPassword Password for the "postgres" admin user
+      # смотри full-values для понимания.
+  
+      # Вот пример для случая, когда ты:
+      # Хочешь создашь админку и уже из админки создать аккаунты и дб.
+      existingSecret: postgres-credentials
+      secretKeys:
+        adminPasswordKey: "admin-password"
+
+      # А вот аналог для случая, когда ты:
+      # Хочешь чтобы одна база и один пользователь уже были автоматом созданы при развёртвании. 
       # existingSecret: postgres-credentials
-      # secretKeys: # а тут ключи в этом секрете
-      #   adminPasswordKey: postgres-password
-      #   userPasswordKey: postgres-password
-      #   replicationPasswordKey: postgres-password
-      # username: "dev_user" # не шифруется
-      # # password: "" # пароль для user - теперь из секрета (existingSecret)
-      # database: "dev_db" # не шифруется
+      # secretKeys:
+      #   adminPasswordKey: admin-password
+      #   userPasswordKey: user-password 
+      # username: "dev_user" 
+      # database: "dev_db"
 
 architecture: standalone # или replication
 
