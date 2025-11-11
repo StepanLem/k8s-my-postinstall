@@ -27,3 +27,9 @@ env:
         vaultPath: "teams/backend/dev/transcriber/admin-panel"
         vaultKey: "password"
         secretKey: "password" # ключ в Kubernetes секретеща напишу здесь всякое.
+
+
+
+monitoring:
+  serviceMonitor:
+    enabled: false
