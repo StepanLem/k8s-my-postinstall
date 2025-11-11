@@ -4,14 +4,11 @@ ingress:
   enabled: true
   className: "nginx"
   hosts:
-    - host: frontend.dev.veryred.ru
+    - host: transcriber.dev.veryred.ru
       paths:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: nginx-frontend-tls
+    - secretName: transcriber-tls
       hosts:
-        - frontend.dev.veryred.ru
-
-env:
-  apiBase: "https://main-backend.dev.veryred.ru/api"
+        - transcriber.dev.veryred.ru

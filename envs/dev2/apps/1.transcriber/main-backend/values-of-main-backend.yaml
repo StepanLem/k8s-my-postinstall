@@ -1,17 +1,17 @@
 image:
-  tag: v0.0.7
+  tag: v0.0.8
 ingress:
   enabled: true
   className: "nginx"
   hosts:
-    - host: main-backend.dev.veryred.ru
+    - host: transcriber.dev.veryred.ru
       paths:
-        - path: /
+        - path: /api
           pathType: Prefix
   tls:
-    - secretName: main-backend-tls
+    - secretName: transcriber-tls
       hosts:
-        - main-backend.dev.veryred.ru
+        - transcriber.dev.veryred.ru
 
 
 env:
