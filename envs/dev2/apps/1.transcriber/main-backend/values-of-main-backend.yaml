@@ -1,18 +1,10 @@
 image:
   tag: v0.0.8
-ingress:
-  enabled: true
-  className: "nginx"
-  hosts:
-    - host: englab.dev.veryred.ru
-      paths:
-        - path: /api
-          pathType: Prefix
-  tls:
-    - secretName: englab-tls
-      hosts:
-        - englab.dev.veryred.ru
 
+ingress:
+  host: englab.veryred.ru
+  tls:
+    secretName: englab-tls
 
 env:
   externalSecret:
