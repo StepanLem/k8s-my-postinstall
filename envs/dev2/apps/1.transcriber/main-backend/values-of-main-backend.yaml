@@ -32,4 +32,4 @@ env:
 
 monitoring:
   serviceMonitor:
-    enabled: false
+    enabled: true
