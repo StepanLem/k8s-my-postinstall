@@ -4,11 +4,11 @@ ingress:
   enabled: true
   className: "nginx"
   hosts:
-    - host: transcriber.dev.veryred.ru
+    - host: englab.dev.veryred.ru
       paths:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: transcriber-tls
+    - secretName: englab-tls
       hosts:
-        - transcriber.dev.veryred.ru
+        - englab.dev.veryred.ru
