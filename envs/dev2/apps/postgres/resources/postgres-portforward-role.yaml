@@ -11,3 +11,4 @@ rules:
     resources: ["pods/portforward"] # чёт по-моему он неидеален
     verbs: ["create"]
 
+

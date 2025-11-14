@@ -13,3 +13,4 @@ ingress:
       hosts:
         - noauth.dev.veryred.ru
 
+

@@ -7,7 +7,7 @@
 
 
 global:
-  domain: argocd.veryred.ru
+  domain: argocd.dev.veryred.ru
 
 configs:
   params:
@@ -24,7 +24,7 @@ server:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
     extraTls:
       - hosts:
-        - argocd.veryred.ru
+        - argocd.dev.veryred.ru
         # Based on the ingress controller used secret might be optional
         secretName: argocd-server-tls
     # tls: true не используется, ибо его заменяет extraTls с явным указанием секрета.

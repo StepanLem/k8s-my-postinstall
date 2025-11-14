@@ -14,3 +14,4 @@ spec:
   selector:
     {{- include "vaultwarden.selectorLabels" . | nindent 4 }}
 
+

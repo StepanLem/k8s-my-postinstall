@@ -1,4 +1,10 @@
 
+
+# версию и values смотри на артифкатхаб:
+# https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
+
+# тут много значеий. Ещё требует копания. Но по факту работает из коробки неплохо.
+
 # grafana:
 #   enabled: true
 #   ingress:
@@ -7,3 +13,6 @@
 #     hosts:
 #       - grafana.dev2.veryred.ru
 
+# дефолтный аккаунт графаны:
+# логин: admin
+# пароль: prom-operator

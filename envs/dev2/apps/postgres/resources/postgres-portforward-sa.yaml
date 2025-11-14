@@ -4,3 +4,4 @@ metadata:
   name: dev-access
   namespace: postgres # namespace самого rbac = namespace куда будет доступ
 
+

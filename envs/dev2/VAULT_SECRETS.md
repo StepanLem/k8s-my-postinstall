@@ -129,3 +129,4 @@ vault kv get kv/veryred/gitlab-runner/credentials
    - Работает ли External Secrets Operator
    - Правильно ли настроен ClusterSecretStore
 
+

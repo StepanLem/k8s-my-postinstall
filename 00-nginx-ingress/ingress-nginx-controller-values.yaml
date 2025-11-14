@@ -25,6 +25,7 @@ controller:
   ingressClass: nginx
   
   # -- Use a `DaemonSet` or `Deployment`
+  # к сведенью: daemonset только на воркере был. На контрол plane не было.
   kind: DaemonSet # для hostport рекомендуется DaemonSet. Для внешнего LB или MetalLB - Deployment.
   # Перенапрвлляет трафик с ноды на сервис по ингресу. Замещает LB в маленьких кластерах.
   hostPort:
