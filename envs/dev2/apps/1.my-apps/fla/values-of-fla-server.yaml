@@ -3,6 +3,6 @@ image:
 ingress:
   enabled: true
   className: "nginx"
-  host: fla-server.veryred.ru
+  host: fla-server.dev.veryred.ru
   tls:
     secretName: fla-server-tls
