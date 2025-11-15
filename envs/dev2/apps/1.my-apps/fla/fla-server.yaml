@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fla-server
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: fla-server
+    app.kubernetes.io/component: websocket
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources: # кстати если интересно git - к закрытым репо, к которым ssh доступ есть, а https к публичным обычно.
+    - repoURL: https://gitlab.com/transcriber-app/fla-server.git # репо с чартом.
+      targetRevision: main
+      path: charts/fla-server # путь до чарта в репо с чартом.
+      helm:
+        valueFiles:
+          - $values/envs/dev2/apps/1.my-apps/fla/values-of-fla-server.yaml # путь до values в репо с values.
+    - repoURL: https://github.com/StepanLem/k8s-my-postinstall.git # репо с values.
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fla
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  revisionHistoryLimit: 10
+

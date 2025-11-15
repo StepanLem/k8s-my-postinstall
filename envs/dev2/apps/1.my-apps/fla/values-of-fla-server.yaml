@@ -1,0 +1,10 @@
+image:
+  tag: v0.0.1
+
+ingress:
+  enabled: true
+  className: "nginx"
+  host: fla-server.veryred.ru
+  tls:
+    secretName: fla-server-tls
+
