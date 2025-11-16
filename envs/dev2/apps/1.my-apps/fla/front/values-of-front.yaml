@@ -1,14 +1,11 @@
 image:
-  tag: v0.0.1
-
+  tag: v0.0.2
 # env:
 #   wsUrl: "wss://fla-server.dev.veryred.ru/ws/audio"
 #   apiBase: "https://fla-server.dev.veryred.ru"
-
 ingress:
   enabled: true
   className: "nginx"
   host: fla-server.dev.veryred.ru
   tls:
     secretName: fla-server-tls
-
