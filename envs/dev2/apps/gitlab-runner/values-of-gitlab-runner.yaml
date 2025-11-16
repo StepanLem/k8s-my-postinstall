@@ -43,7 +43,16 @@ runners:
         namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
         image = "alpine"
         privileged = false
-  
+        pull_policy = "if-not-present"
+        allowed_pull_policies = ["always", "if-not-present"]
+        cpu_request = "100m"
+        memory_request = "128Mi"
+
+# cpu_request = "100m"
+# memory_request = "128Mi"
+# cpu_limit = "500m"
+# memory_limit = "512Mi"
+# тут лимиты и requests - не смотрел актуальность значений.
 
 # Resources configuration
 resources:
@@ -106,5 +115,7 @@ serviceAccount:
   create: true
   # annotations: {}
   # name: ""
+
+
 
 
