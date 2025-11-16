@@ -1,5 +1,5 @@
 image:
-  tag: v0.0.26
+  tag: v0.0.27
 # env:
 #   wsUrl: "wss://fla-server.dev.veryred.ru/ws/audio"
 #   apiBase: "https://fla-server.dev.veryred.ru"
