@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: front
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: front
+    app.kubernetes.io/component: frontend
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    - repoURL: https://gitlab.com/transcriber-app/fla/front.git
+      targetRevision: main
+      path: charts/front
+      helm:
+        valueFiles:
+          - $values/envs/dev2/apps/1.my-apps/fla/front/values-of-front.yaml
+    - repoURL: https://github.com/StepanLem/k8s-my-postinstall.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fla
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  revisionHistoryLimit: 10
+
