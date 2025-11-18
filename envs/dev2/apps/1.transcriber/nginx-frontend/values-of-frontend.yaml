@@ -1,8 +1,11 @@
 image:
-  tag: v0.0.37
+  tag: v0.0.38
 
 ingress:
   host: englab.dev.veryred.ru
   tls:
     secretName: englab-tls
+
+
+
 
